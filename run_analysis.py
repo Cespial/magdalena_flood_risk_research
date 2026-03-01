@@ -667,7 +667,7 @@ def init_gee(logger: logging.Logger) -> bool:
         import ee
         from dotenv import load_dotenv
         load_dotenv()
-        project_id = os.getenv("GEE_PROJECT_ID", "ee-flood-risk-magdalena")
+        project_id = os.getenv("GEE_PROJECT_ID", "ee-maestria-tesis")
         try:
             ee.Initialize(project=project_id)
         except Exception:

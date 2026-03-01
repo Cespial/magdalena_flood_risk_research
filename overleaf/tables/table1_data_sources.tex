@@ -1,0 +1,21 @@
+\begin{table}[htbp]
+\caption{Remote sensing and ancillary datasets used in the flood risk assessment.}
+\label{tab:data_sources}
+\begin{tabular}{p{3.2cm}p{2cm}p{1.2cm}p{1.2cm}p{1.5cm}p{3cm}p{2.5cm}}
+\toprule
+Dataset & Source & Spatial Res. & Temporal Res. & Period & Variables & Purpose \\
+\midrule
+Sentinel-1 SAR GRD & ESA/Copernicus & 10 m & 12 days & 2015--2025 & VV, VH backscatter (dB) & Flood water detection \\
+JRC Global Surface Water v1.4 & EC-JRC & 30 m & Monthly & 1984--2021 & Occurrence, recurrence, transitions & Reference water map \\
+SRTM DEM v3 & NASA/USGS & 30 m & Static & 2000 & Elevation, slope, aspect, curvature & Topographic features \\
+HAND (Height Above Nearest Drainage) & Derived from SRTM & 30 m & Static & 2000 & Height above drainage (m) & Flood susceptibility proxy \\
+CHIRPS Daily v2.0 & UCSB-CHG & 5.5 km & Daily & 2015--2025 & Precipitation (mm/day) & Precipitation analysis, SPI \\
+MODIS MOD11A2 v061 & NASA LP DAAC & 1 km & 8-day & 2015--2025 & LST day/night (K) & Temperature trends \\
+ERA5-Land Monthly & ECMWF/Copernicus & 11 km & Monthly & 2015--2025 & Soil moisture, temperature & Climate variables \\
+ESA WorldCover v200 & ESA & 10 m & Annual & 2021 & Land cover (11 classes) & Land use classification \\
+WorldPop v2020 & WorldPop/U. Southampton & 100 m & Annual & 2020 & Population density (pop/cell) & Exposure assessment \\
+GADM v4.1 & UC Davis / GADM & Vector & Static & 2024 & Admin. boundaries (L0--L2) & Department, municipality boundaries \\
+HydroSHEDS/HydroBASINS & WWF/HydroSHEDS & Vector & Static & 2023 & River basin delineation & Hydrological units \\
+\bottomrule
+\end{tabular}
+\end{table}

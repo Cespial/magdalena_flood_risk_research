@@ -1,0 +1,20 @@
+\begin{table}[htbp]
+\caption{Top 10 flood susceptibility features ranked by mean absolute SHAP value from the XGBoost model.}
+\label{tab:feature_importance}
+\begin{tabular}{clp{4cm}p{4cm}rr}
+\toprule
+Rank & Feature & Description & Mean |SHAP| & Relative Importance (\%) \\
+\midrule
+1 & HAND & Height Above Nearest Drainage (m) & 0.150500 & 29.300000 \\
+2 & Slope & Terrain slope (degrees) & 0.100600 & 19.600000 \\
+3 & Flood freq. (JRC) & JRC water occurrence (\%) & 0.065800 & 12.800000 \\
+4 & Elevation & SRTM elevation (m a.s.l.) & 0.061600 & 12.000000 \\
+5 & Distance to rivers & Euclidean distance to nearest river (m) & 0.046000 & 8.900000 \\
+6 & TWI & Topographic Wetness Index & 0.045600 & 8.900000 \\
+7 & Rainfall (annual) & Mean annual precipitation (mm) & 0.023500 & 4.600000 \\
+8 & SAR water freq. & Sentinel-1 derived water frequency (\%) & 0.008500 & 1.700000 \\
+9 & Land cover & ESA WorldCover land cover class & 0.008500 & 1.700000 \\
+10 & NDVI mean & Mean annual NDVI (Sentinel-2) & 0.003000 & 0.600000 \\
+\bottomrule
+\end{tabular}
+\end{table}

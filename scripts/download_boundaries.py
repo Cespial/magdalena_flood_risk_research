@@ -318,15 +318,34 @@ def create_magdalena_subregions() -> None:
     }
 
     muns = gpd.read_file(muns_path)
-    mun_index = {row["NAME_2"]: idx for idx, row in muns.iterrows()}
+
+    # GADM uses accented names without spaces (e.g. "CerrodeSanAntonio",
+    # "Ciénaga", "ElPiñón"), while gee_config uses ASCII with spaces
+    # (for FAO GAUL compatibility). Build a normalized lookup to bridge both.
+    # Known GADM typos: "Chivolo" should be "Chibolo" (official DANE name).
+    GADM_ALIASES = {'chibolo': 'chivolo'}
+
+    import unicodedata
+    def _norm(s):
+        """Normalize: strip accents, lowercase, remove spaces/hyphens."""
+        nfkd = unicodedata.normalize('NFKD', s)
+        ascii_str = ''.join(c for c in nfkd if not unicodedata.combining(c))
+        return ascii_str.lower().replace(' ', '').replace('-', '')
+
+    mun_index = {}  # normalized_name -> index
+    for idx, row in muns.iterrows():
+        mun_index[_norm(row["NAME_2"])] = idx
 
     features = []
     for subregion_name, mun_list in SUBREGIONS.items():
         geoms = []
         matched, missing = [], []
         for mun in mun_list:
-            if mun in mun_index:
-                geoms.append(muns.loc[mun_index[mun], "geometry"])
+            norm_key = _norm(mun)
+            # Apply known GADM aliases for typos
+            norm_key = GADM_ALIASES.get(norm_key, norm_key)
+            if norm_key in mun_index:
+                geoms.append(muns.loc[mun_index[norm_key], "geometry"])
                 matched.append(mun)
             else:
                 missing.append(mun)

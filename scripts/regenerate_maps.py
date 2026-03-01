@@ -47,10 +47,10 @@ from utils import (
 
 import ee
 try:
-    ee.Initialize(project='ee-flood-risk-magdalena')
+    ee.Initialize(project='ee-maestria-tesis')
 except Exception:
     ee.Authenticate()
-    ee.Initialize(project='ee-flood-risk-magdalena')
+    ee.Initialize(project='ee-maestria-tesis')
 
 warnings.filterwarnings("ignore", category=UserWarning, module="matplotlib")
 

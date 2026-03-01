@@ -500,7 +500,8 @@ def fig04_flood_frequency() -> None:
     # Classify
     class_info = FLOOD_FREQUENCY_CLASSES
     boundaries = [0, 1, 10, 25, 50, 75, 100]
-    colors = [v["color"] for v in class_info.values()]
+    # 6 bins: no flood + 5 frequency classes
+    colors = ["#ffffff"] + [v["color"] for v in class_info.values()]
     cmap = ListedColormap(colors)
     norm = BoundaryNorm(boundaries, cmap.N)
 

@@ -19,10 +19,10 @@ load_dotenv()
 
 # --- GEE Initialization ---
 try:
-    ee.Initialize(project=os.getenv('GEE_PROJECT_ID', 'ee-flood-risk-magdalena'))
+    ee.Initialize(project=os.getenv('GEE_PROJECT_ID', 'ee-maestria-tesis'))
 except Exception:
     ee.Authenticate()
-    ee.Initialize(project=os.getenv('GEE_PROJECT_ID', 'ee-flood-risk-magdalena'))
+    ee.Initialize(project=os.getenv('GEE_PROJECT_ID', 'ee-maestria-tesis'))
 
 # ============================================================================
 # STUDY AREA: Department of Magdalena, Colombia
