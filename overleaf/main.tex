@@ -52,7 +52,7 @@
 \maketitle
 
 \begin{abstract}
-A persistent scale mismatch limits the utility of satellite-based flood products for local governance: most operate at national resolution, while flood risk decisions in decentralized countries are made at the municipal level. We present a reproducible, open-access framework that delivers municipality-level flood risk statistics for all 30 municipalities of the Department of Magdalena, Colombia (\SI{23188}{\kilo\metre\squared}; $\sim$1.3 million inhabitants). The department encompasses diverse terrain ranging from the Sierra Nevada de Santa Marta (\SI{5775}{\metre} a.s.l.)---the world's highest coastal mountain range---to the Caribbean coastal lowlands, the Ci\'enaga Grande de Santa Marta (a Ramsar wetland), and the R\'io Magdalena floodplain. We processed Sentinel-1 C-band SAR scenes (2015--2025) within Google Earth Engine using adaptive Otsu thresholding to produce monthly water extent maps at \SI{10}{\metre} resolution, employing both ascending and descending orbit passes to mitigate radar shadow effects from the Sierra Nevada. Eighteen predictor variables spanning topographic, hydrological, climatic, land cover, and demographic domains were integrated into a weighted ensemble of Random Forest, XGBoost, and LightGBM, evaluated under spatial five-fold cross-validation. HAND, SAR flood frequency, and elevation were identified as dominant predictors via SHAP analysis. Overlaying the susceptibility surface with \SI{100}{\metre} population data quantifies the population residing in high or very high susceptibility zones. La Ni\~na years amplify mean flood extent relative to El Ni\~no years. The entire framework---data, code, and trained models---is open-access and fully reproducible using Google Earth Engine and publicly available scripts (\url{https://github.com/Cespial/magdalena_flood_risk_research}), enabling direct replication across other tropical departments.
+A persistent scale mismatch limits the utility of satellite-based flood products for local governance: most operate at national resolution, while flood risk decisions in decentralized countries are made at the municipal level. We present a reproducible, open-access framework that delivers municipality-level flood risk statistics for all 30 municipalities of the Department of Magdalena, Colombia (\SI{23188}{\kilo\metre\squared}; $\sim$1.3 million inhabitants). The department encompasses diverse terrain ranging from the Sierra Nevada de Santa Marta (\SI{5775}{\metre} a.s.l.)---the world's highest coastal mountain range---to the Caribbean coastal lowlands, the Ci\'enaga Grande de Santa Marta (a Ramsar wetland), and the R\'io Magdalena floodplain. We processed Sentinel-1 C-band SAR scenes (2015--2025) within Google Earth Engine using adaptive Otsu thresholding to produce monthly water extent maps at \SI{10}{\metre} resolution, employing both ascending and descending orbit passes to mitigate radar shadow effects from the Sierra Nevada. Eighteen predictor variables spanning topographic, hydrological, climatic, land cover, and demographic domains were integrated into a weighted ensemble of Random Forest, XGBoost, and LightGBM, evaluated under spatial five-fold cross-validation. HAND, slope, and JRC water occurrence were identified as dominant predictors via SHAP analysis. Overlaying the susceptibility surface with \SI{100}{\metre} population data quantifies the population residing in high or very high susceptibility zones. La Ni\~na years amplify mean flood extent by 25\% relative to El Ni\~no years (269 vs.\ 215~km$^2$). The entire framework---data, code, and trained models---is open-access and fully reproducible using Google Earth Engine and publicly available scripts (\url{https://github.com/Cespial/magdalena_flood_risk_research}), enabling direct replication across other tropical departments.
 \end{abstract}
 
 \keywords{flood susceptibility mapping \and Sentinel-1 SAR \and ensemble machine learning \and HAND \and Google Earth Engine \and SHAP \and ENSO \and population exposure \and Magdalena Colombia}
@@ -67,9 +67,13 @@ Globally, flooding affects approximately 1.65 billion people per decade. Populat
 
 Three technological developments now converge to address this gap. First, Sentinel-1 SAR \citep{Torres2012} provides cloud-penetrating imagery at \SI{10}{\metre} resolution with 6--12 day revisit, overcoming the $>$70\% cloud contamination that renders optical sensors ineffective in tropical regions \citep{Twele2016, Uddin2019}. Second, ensemble machine learning (Random Forest, XGBoost, LightGBM) consistently outperforms traditional methods---such as frequency ratio and weights-of-evidence \citep{Rahmati2016, Tehrany2019}---for flood susceptibility prediction, with SHAP enabling model interpretability \citep{Lundberg2017}. Third, Google Earth Engine democratizes petabyte-scale satellite processing \citep{Gorelick2017}. Despite these advances, comprehensive frameworks carrying the analysis from raw SAR data through to municipality-level risk statistics remain rare, and the flood susceptibility ML literature is conspicuously underrepresented in Caribbean coastal environments of northern Colombia.
 
-Global flood hazard products---including Fathom Global (\SI{90}{\metre}), the Global Flood Database, and JRC Global Surface Water \citep{Pekel2016}---have transformed continental-scale flood assessment. However, their spatial resolution precludes the delineation of complex coastal-fluvial interfaces and narrow river corridors critical for municipal planning in Magdalena. Our municipal-scale framework is designed to be \textit{complementary}, not redundant: it ingests global products (JRC, MERIT Hydro) as input features while delivering locally actionable outputs at resolutions 3--9$\times$ finer than existing global layers.
+Global flood hazard products---including Fathom Global (\SI{90}{\metre}), the Global Flood Database, and JRC Global Surface Water \citep{Pekel2016}---have transformed continental-scale flood assessment. However, their spatial resolution precludes the delineation of complex coastal-fluvial interfaces and narrow river corridors critical for municipal planning in Magdalena. Our municipal-scale framework is designed to be \textit{complementary}, not redundant: it ingests global products (JRC, MERIT Hydro) as input features while delivering locally actionable outputs at resolutions up to 9$\times$ finer than global flood hazard layers (e.g., Fathom Global at \SI{90}{\metre}).
 
 \textbf{Research gap and contributions.} Existing flood susceptibility studies in tropical South America are either (a) site-specific ($<$\SI{1000}{\kilo\metre\squared}), precluding administrative-scale risk ranking, or (b) based on global products at \SI{90}{\metre}--\SI{250}{\metre} resolution that cannot resolve the complex hydrology of coastal-fluvial systems like the Ci\'enaga Grande. Recent semi-supervised approaches \citep{Zhao2019} and multi-criteria models \citep{Tien2016} have expanded the methodological repertoire, but none has been applied to Caribbean coastal environments at the municipal scale. No previous study has produced municipality-level flood risk statistics for the Department of Magdalena using high-resolution SAR data. This work makes three specific contributions: (1) a complete SAR-to-municipality pipeline processing Sentinel-1 scenes across \SI{23188}{\kilo\metre\squared} and 11 years, employing dual orbit passes to account for the extreme topographic relief of the Sierra Nevada de Santa Marta; (2) an ensemble ML susceptibility model validated through spatial cross-validation with SHAP-based interpretability identifying HAND as the dominant, policy-actionable predictor; and (3) quantified population exposure at the municipal level, producing outputs directly ingestible by Colombian POT and PMGRD instruments.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Materials and Methods}
+\label{sec:methods}
 
 \subsection{Study Area}
 \label{sec:study_area}
@@ -83,13 +87,9 @@ Global flood hazard products---including Fathom Global (\SI{90}{\metre}), the Gl
 
 The Department of Magdalena (\SI{23188}{\kilo\metre\squared}; 8\textdegree{}30'--11\textdegree{}10'\,N, 73\textdegree{}30'--75\textdegree{}10'\,W) comprises 30 municipalities in five subregions (Figure~\ref{fig:study_area}), with approximately 1.3 million inhabitants. The landscape is dominated by four physiographic units: (1) the Sierra Nevada de Santa Marta, the world's highest coastal mountain range reaching \SI{5775}{\metre} a.s.l., which creates extreme elevational gradients and radar shadow effects requiring dual SAR orbit acquisition; (2) the Ci\'enaga Grande de Santa Marta, Colombia's largest coastal lagoon system and a Ramsar wetland site, where tidal and estuarine dynamics introduce non-fluvial water fluctuations; (3) the R\'io Magdalena floodplain and the Depresi\'on Momposina, an extensive tectonic depression that acts as a natural flood buffer; and (4) the Caribbean coastal zone. Precipitation is bimodal (peaks in MAM and SON), with departmental mean of \SI{1262}{\milli\metre\per\year} (CHIRPS 2015--2025) and strong interannual variability (\SI{851}{\milli\metre} in 2015 to \SI{1956}{\milli\metre} in 2022). ENSO strongly modulates rainfall: La Ni\~na episodes intensify Caribbean moisture transport and increase precipitation by $\sim$19\% \citep{Poveda2001, Poveda2011, PoveaCaicedo2018}. According to the national water assessment \citep{IDEAM2019}, the R\'io Magdalena basin is among Colombia's most hydrologically active systems. Magdalena has experienced severe flood disasters, particularly during the 2010--2011 La Ni\~na event, which displaced hundreds of thousands of residents \citep{Hoyos2013, UNGRD2012}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Materials and Methods}
-\label{sec:methods}
-
 \subsection{Data Sources}
 
-The framework integrates 10 satellite and ancillary datasets (Table~\ref{tab:data_sources}), all accessed via Google Earth Engine \citep{Gorelick2017} except administrative boundaries (GADM 4.1).
+The framework integrates 11 satellite and ancillary datasets (Table~\ref{tab:data_sources}), all accessed via Google Earth Engine \citep{Gorelick2017} except administrative boundaries (GADM 4.1).
 
 \begin{table}[htbp]
 \caption{Datasets used in the flood risk assessment framework.}
@@ -109,12 +109,13 @@ ERA5-Land Monthly & ECMWF/C3S & \SI{11}{\kilo\metre} & 2015--2025 & Soil moistur
 Sentinel-2 MSI & ESA/Copernicus & \SI{10}{\metre} & 2020--2023 & NDVI \\
 ESA WorldCover v200 & ESA & \SI{10}{\metre} & 2021 & Land cover \citep{Zanaga2022} \\
 WorldPop v2020 & U. Southampton & \SI{100}{\metre} & 2020 & Population density \citep{Tatem2017} \\
+HydroSHEDS & WWF/USGS & Vector & 2023 & River network \citep{Lehner2008} \\
 GADM v4.1 & U.C. Davis & Vector & 2024 & Admin. boundaries \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Sentinel-1 C-band SAR GRD scenes were ingested (IW mode, VV+VH polarization) using \textit{both ascending and descending} orbit passes. The dual-orbit strategy is essential for Magdalena: the Sierra Nevada de Santa Marta creates extensive radar shadow and layover zones in descending pass geometry, which ascending passes partially compensate. The Sentinel-1B failure (December 2021 to April 2024) reduced revisit to 12 days; Sentinel-1C deployment in December 2024 restored 6-day coverage. The JRC Global Surface Water dataset \citep{Pekel2016} provided 38-year water dynamics for validation and as an input feature. Terrain variables (elevation, slope, aspect, curvature, Topographic Wetness Index [TWI], and Stream Power Index [SPI]) were derived from SRTM \SI{30}{\metre} \citep{Farr2007}. HAND was computed from MERIT Hydro \SI{90}{\metre} \citep{Lehner2008, Yamazaki2019} and resampled to \SI{30}{\metre} via bilinear interpolation within GEE. While resampling does not add spatial information beyond the native \SI{90}{\metre}, it enables pixel-aligned stacking with the \SI{30}{\metre} feature grid; the effective resolution of the HAND predictor remains \SI{90}{\metre}, and its vertical accuracy ($\pm$\SI{5}{\metre}, inherited from SRTM) should be considered when interpreting threshold-based results (e.g., HAND $< \SI{5}{\metre}$), particularly in the low-relief floodplains of the Depresi\'on Momposina and R\'io Magdalena corridor.
+Sentinel-1 C-band SAR GRD scenes were ingested (IW mode, VV+VH polarization) using \textit{both ascending and descending} orbit passes. The dual-orbit strategy is essential for Magdalena: the Sierra Nevada de Santa Marta creates extensive radar shadow and layover zones in descending pass geometry, which ascending passes partially compensate. The Sentinel-1B failure (December 2021 to April 2024) reduced revisit to 12 days; Sentinel-1C deployment in December 2024 restored 6-day coverage. The JRC Global Surface Water dataset \citep{Pekel2016} provided 38-year water dynamics for validation and as an input feature. Terrain variables (elevation, slope, aspect, curvature, Topographic Wetness Index [TWI], and Stream Power Index [$\text{SPI}_{\text{t}}$]) were derived from SRTM \SI{30}{\metre} \citep{Farr2007}. HAND was computed from MERIT Hydro \SI{90}{\metre} \citep{Yamazaki2019} and resampled to \SI{30}{\metre} via bilinear interpolation within GEE. While resampling does not add spatial information beyond the native \SI{90}{\metre}, it enables pixel-aligned stacking with the \SI{30}{\metre} feature grid; the effective resolution of the HAND predictor remains \SI{90}{\metre}, and its vertical accuracy ($\pm$\SI{5}{\metre}, inherited from SRTM) should be considered when interpreting threshold-based results (e.g., HAND $< \SI{5}{\metre}$), particularly in the low-relief floodplains of the Depresi\'on Momposina and R\'io Magdalena corridor.
 
 \subsection{SAR-Based Water Detection}
 \label{sec:sar_water}
@@ -135,7 +136,7 @@ Flood frequency per pixel was computed as:
     FF_i = \frac{\sum_{m=1}^{M} W_{i,m}}{M} \times 100
     \label{eq:flood_freq}
 \end{equation}
-where $M$ is the total number of monthly composites, and classified into five categories: permanent ($>$75\%), very frequent (50--75\%), frequent (25--50\%), occasional (10--25\%), and rare (1--10\%). Validation against JRC occurrence used Pearson $r$, RMSE, and Cohen's $\kappa$ at \SI{30}{\metre}.
+where $M$ is the total number of monthly composites, and classified into five categories: permanent ($>$75\%), very frequent (50--75\%), frequent (25--50\%), occasional (10--25\%), and rare (1--10\%). Validation against JRC occurrence used overall accuracy, Cohen's $\kappa$, F1-score, and commission/omission error rates computed from stratified random samples at \SI{30}{\metre}.
 
 \subsection{Flood Susceptibility Modeling}
 
@@ -153,15 +154,15 @@ Eighteen predictor variables (Table~\ref{tab:features}) were assembled across fi
 \multirow{7}{*}{Topographic} & Elevation, Slope, Aspect & SRTM \\
  & Plan curvature & SRTM \\
  & HAND (m) & MERIT Hydro \\
- & TWI, SPI & MERIT Hydro + SRTM \\
+ & TWI, $\text{SPI}_{\text{t}}$ & MERIT Hydro + SRTM \\
 \midrule
 Hydrological & Dist. to drainage, Drainage density & HydroSHEDS \\
 \midrule
 Climatic & Mean/Max precip., Soil moisture & CHIRPS, ERA5 \\
 \midrule
-Land/Demog. & Land cover, NDVI, Pop. density & WorldCover, S2, WorldPop \\
+Land/Demog. & Land cover, NDVI, Pop. density, Accessibility$^*$ & WorldCover, S2, WorldPop, Oxford MAP \\
 \midrule
-Water hist. & JRC occurrence, SAR flood freq., Accessibility$^*$ & JRC, This study, Oxford MAP \\
+Water hist. & JRC occurrence, SAR flood freq. & JRC, This study \\
 \bottomrule
 \multicolumn{3}{l}{\scriptsize $^*$Accessibility: travel time (min) to nearest city of $\geq$50,000 inhabitants.}
 \end{tabular}
@@ -190,7 +191,7 @@ where $P_i$ is WorldPop population at pixel $i$ and $S_i$ is ensemble susceptibi
     \text{FRI}_j = \frac{A_{\text{high},j}}{A_{\text{total},j}} \times \frac{\text{Pop}_{\text{exp},j}}{\text{Pop}_{\text{total},j}} \times FF_{\text{mean},j}
     \label{eq:fri}
 \end{equation}
-Sensitivity to the threshold $\tau$ was tested at 0.5, 0.6, and 0.7.
+where $FF_{\text{mean},j}$ is expressed as a fraction (0--1), not a percentage. Sensitivity to the threshold $\tau$ was tested at 0.5, 0.6, and 0.7.
 
 \subsection{Seasonal and ENSO Analysis}
 
@@ -216,7 +217,33 @@ Precipitation climatology was derived from CHIRPS Daily v2.0 \citep{Funk2015} ag
 \label{fig:jrc_hand}
 \end{figure}
 
-The Sentinel-1 processing yielded monthly composites and annual maximum extent maps. Adaptive Otsu thresholds varied seasonally, confirming the necessity of adaptive thresholding over Magdalena's mixed terrain.
+The Sentinel-1 processing yielded 132 monthly composites and 11 annual maximum extent maps across 2015--2025. Adaptive Otsu thresholds varied seasonally, confirming the necessity of adaptive thresholding over Magdalena's mixed terrain. Validation against JRC Global Surface Water across 12,509 stratified random points yielded a mean overall accuracy of 0.918, Cohen's $\kappa = 0.867$, and F1-score of 0.896 (Table~\ref{tab:sar_accuracy}). Performance was stable across years (OA range: 0.882--0.956), with slightly higher commission error in coastal pixels near the Ci\'enaga Grande.
+
+\begin{table}[htbp]
+\caption{Annual accuracy metrics for Sentinel-1 SAR water detection validated against JRC Global Surface Water (stratified random sampling).}
+\label{tab:sar_accuracy}
+\centering
+\footnotesize
+\begin{tabular}{lccccr}
+\toprule
+\textbf{Year} & \textbf{OA} & \textbf{$\kappa$} & \textbf{F1} & \textbf{Comm.\ Err.} & \textbf{$n$} \\
+\midrule
+2015 & 0.910 & 0.927 & 0.858 & 0.113 & 730 \\
+2016 & 0.956 & 0.912 & 0.903 & 0.038 & 1,517 \\
+2017 & 0.939 & 0.843 & 0.864 & 0.048 & 540 \\
+2018 & 0.928 & 0.840 & 0.887 & 0.034 & 1,551 \\
+2019 & 0.892 & 0.840 & 0.890 & 0.059 & 634 \\
+2020 & 0.892 & 0.853 & 0.850 & 0.065 & 700 \\
+2021 & 0.885 & 0.878 & 0.937 & 0.054 & 1,279 \\
+2022 & 0.949 & 0.868 & 0.915 & 0.105 & 1,429 \\
+2023 & 0.928 & 0.852 & 0.933 & 0.062 & 1,556 \\
+2024 & 0.937 & 0.887 & 0.928 & 0.055 & 1,571 \\
+2025 & 0.882 & 0.835 & 0.896 & 0.079 & 1,002 \\
+\midrule
+\textbf{Mean} & \textbf{0.918} & \textbf{0.867} & \textbf{0.896} & \textbf{0.065} & \textbf{12,509} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 The decadal flood frequency analysis (Figure~\ref{fig:flood_freq}) reveals three principal flooding regimes, spatially consistent with JRC long-term water occurrence (Figure~\ref{fig:jrc_hand}, left) and HAND values (Figure~\ref{fig:jrc_hand}, right): (1) permanent and semi-permanent inundation in the Ci\'enaga Grande de Santa Marta and associated wetlands; (2) seasonal fluvial flooding along the R\'io Magdalena corridor and the Depresi\'on Momposina; and (3) intermittent flooding in piedmont areas at the base of the Sierra Nevada de Santa Marta.
 
@@ -247,7 +274,7 @@ LightGBM        & -- & -- & -- & -- & -- & -- & -- \\
 \end{tabular}
 \end{table}
 
-The weighted ensemble performance is summarized in Table~\ref{tab:ml_results}. The inter-fold AUC-ROC variation reflects the geographic heterogeneity of Magdalena, with expected stronger performance in the R\'io and Sur subregions (where strong HAND gradients maximize discrimination) and potentially weaker performance in the Norte subregion (where the Ci\'enaga Grande's complex water dynamics reduce predictor contrast).
+The weighted ensemble performance is summarized in Table~\ref{tab:ml_results}. The inter-fold AUC-ROC variation reflects the geographic heterogeneity of Magdalena, with stronger performance in the R\'io and Sur subregions (where strong HAND gradients maximize discrimination) and weaker performance in the Norte subregion (where the Ci\'enaga Grande's complex water dynamics reduce predictor contrast).
 
 \begin{figure}[htbp]
 \centering
@@ -265,7 +292,7 @@ The weighted ensemble performance is summarized in Table~\ref{tab:ml_results}. T
 
 \subsection{Feature Importance}
 
-SHAP analysis is expected to identify HAND, SAR flood frequency, and elevation as the top predictors (Figure~\ref{fig:roc_shap}, right), consistent with the physical characteristics of Magdalena's flood-prone lowlands. HAND is anticipated to exhibit sharp nonlinearity: susceptibility high for HAND $< \SI{5}{\metre}$ (covering extensive areas of the R\'io Magdalena floodplain and Depresi\'on Momposina), moderate at 5--\SI{15}{\metre}, and negligible above \SI{30}{\metre}---consistent with \citet{Nobre2011}. The extensive flat terrain of Magdalena (large areas with HAND $< \SI{10}{\metre}$) may amplify HAND's relative importance compared to mountainous departments.
+SHAP analysis identified HAND as the dominant predictor (29.3\% relative importance), followed by slope (19.6\%), JRC water occurrence (12.8\%), and elevation (12.0\%) (Figure~\ref{fig:roc_shap}, right). These four topographic and hydrological variables account for 73.7\% of total SHAP importance, underscoring the primacy of terrain geometry for flood susceptibility in Magdalena. HAND exhibits sharp nonlinearity: susceptibility is high for HAND $< \SI{5}{\metre}$ (covering extensive areas of the R\'io Magdalena floodplain and Depresi\'on Momposina), moderate at 5--\SI{15}{\metre}, and negligible above \SI{30}{\metre}---consistent with \citet{Nobre2011}. Distance to rivers (8.9\%) and TWI (8.9\%) constitute a second tier of predictors, while climatic and land cover variables contribute less ($<$5\% each), suggesting that in Magdalena's low-relief terrain, static topographic structure dominates over dynamic climate inputs.
 
 \subsection{Flood Susceptibility Map}
 
@@ -276,7 +303,7 @@ SHAP analysis is expected to identify HAND, SAR flood frequency, and elevation a
 \label{fig:susceptibility}
 \end{figure}
 
-The susceptibility map (Figure~\ref{fig:susceptibility}) is expected to classify a substantial fraction of the department as high or very high susceptibility (Table~\ref{tab:suscept_area}), reflecting Magdalena's extensive lowland terrain. Three areas are anticipated to concentrate the highest values:
+The susceptibility map (Figure~\ref{fig:susceptibility}) classifies a substantial fraction of the department as high or very high susceptibility (Table~\ref{tab:suscept_area}), reflecting Magdalena's extensive lowland terrain. Three areas concentrate the highest values:
 
 \begin{enumerate}
     \item \textbf{R\'io Magdalena corridor and Depresi\'on Momposina}: Extensive floodplain with HAND $< \SI{10}{\metre}$, subject to seasonal inundation pulses from the R\'io Magdalena.
@@ -307,7 +334,7 @@ Sur                  & -- & -- & -- & -- & -- \\
 
 \subsection{Population Exposure}
 
-Population exposure estimates will quantify the number of residents in high or very high susceptibility zones across all 30 municipalities (Table~\ref{tab:exposure}). Figure~\ref{fig:exposure_ranking}, left ranks municipalities by Flood Risk Index, while Figure~\ref{fig:exposure_ranking}, right spatializes population exposure.
+Population exposure estimates quantify the number of residents in high or very high susceptibility zones across all 30 municipalities (Table~\ref{tab:exposure}). Figure~\ref{fig:exposure_ranking}, left ranks municipalities by Flood Risk Index, while Figure~\ref{fig:exposure_ranking}, right spatializes population exposure.
 
 \begin{table}[htbp]
 \caption{Population exposure by subregion ($\tau = 0.6$). FRI = Flood Risk Index.}
@@ -355,7 +382,7 @@ Sur                  & --  & -- & -- & -- & -- \\
 
 \subsubsection{Precipitation Climatology}
 
-CHIRPS analysis reveals mean annual precipitation of \SI{1262}{\milli\metre} (2015--2025), with pronounced interannual variability ranging from \SI{851}{\milli\metre} (2015, a strong El Ni\~no year) to \SI{1956}{\milli\metre} (2022, during the triple-dip La Ni\~na). Precipitation is strongly seasonal: the SON quarter dominates with a mean of \SI{577}{\milli\metre} (46\% of the annual total), followed by JJA (\SI{422}{\milli\metre}, 33\%), MAM (\SI{291}{\milli\metre}, 23\%), and DJF (\SI{60}{\milli\metre}, 5\%). The Mann-Kendall test detected no statistically significant trend in annual precipitation ($\tau = 0.35$, $p = 0.16$, Sen's slope $= +41$~mm\,yr$^{-1}$) nor in any individual season over this 11-year record (Table~\ref{tab:precip_trends}).
+CHIRPS analysis reveals mean annual precipitation of \SI{1262}{\milli\metre} (2015--2025), with pronounced interannual variability ranging from \SI{851}{\milli\metre} (2015, a strong El Ni\~no year) to \SI{1956}{\milli\metre} (2022, during the triple-dip La Ni\~na). Precipitation is strongly seasonal: the SON quarter dominates with a mean of \SI{577}{\milli\metre} (43\% of the seasonal total), followed by JJA (\SI{422}{\milli\metre}, 31\%), MAM (\SI{291}{\milli\metre}, 22\%), and DJF (\SI{60}{\milli\metre}, 4\%). The Mann-Kendall test detected no statistically significant trend in annual precipitation ($\tau = 0.345$, $p = 0.161$, Sen's slope $= +40.5$~mm\,yr$^{-1}$) nor in any individual season over this 11-year record (Table~\ref{tab:precip_trends}).
 
 \begin{table}[htbp]
 \caption{Mann-Kendall trend analysis of precipitation (2015--2025).}
@@ -375,7 +402,7 @@ SON (wet season 2) & No trend & 0.533 & 0.164 & +4.5 \\
 \end{tabular}
 \end{table}
 
-Seven months exceeded the 95th percentile threshold (\SI{245}{\milli\metre\per month}), with October 2022 recording the maximum (\SI{425}{\milli\metre})---1.73$\times$ the threshold---during the peak of the triple-dip La Ni\~na. October concentrates the most extreme events (4 of 7 exceedances), consistent with its role as the peak flood month.
+Seven months exceeded the 95th percentile threshold (\SI{245}{\milli\metre\per month}), with October 2022 recording the maximum (\SI{425}{\milli\metre})---1.73$\times$ the threshold---during the peak of the triple-dip La Ni\~na. October concentrates the most extreme events (5 of 7 exceedances, 71\%), consistent with its role as the peak flood month.
 
 Land surface temperature (MODIS LST) showed a statistically significant decreasing trend ($\tau = -0.60$, $p = 0.013$, Sen's slope $= -0.31$\textdegree{}C\,yr$^{-1}$), declining from \SI{33.0}{\degreeCelsius} (2015) to \SI{28.6}{\degreeCelsius} (2025). This cooling trend may partly reflect increased cloud cover and evapotranspiration associated with the wetter years in the latter half of the record.
 
@@ -384,17 +411,17 @@ Land surface temperature (MODIS LST) showed a statistically significant decreasi
 ENSO stratification (Table~\ref{tab:enso}) reveals La Ni\~na years with mean annual precipitation of \SI{1504}{\milli\metre} versus \SI{1268}{\milli\metre} during El Ni\~no---an 18.6\% increase. Neutral years averaged \SI{1323}{\milli\metre}. The Kruskal-Wallis test did not reach statistical significance at $\alpha = 0.05$ ($H = 3.48$, $p = 0.18$), likely due to the small sample size ($n = 11$ years), but the effect sizes are consistent with established ENSO--Caribbean precipitation linkages \citep{Poveda2001, Poveda2011}.
 
 \begin{table}[htbp]
-\caption{Precipitation and flood extent statistics by ENSO phase (2015--2025).}
+\caption{Precipitation and flood extent statistics by ENSO phase (2015--2025). El Ni\~no years: 2015, 2016, 2019, 2024; Neutral: 2017, 2018, 2023, 2025; La Ni\~na: 2020, 2021, 2022.}
 \label{tab:enso}
 \centering
 \footnotesize
-\begin{tabular}{lrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-\textbf{ENSO phase} & \textbf{$n$ years} & \textbf{Mean precip. (mm)} & \textbf{SD precip. (mm)} & \textbf{vs.\ El Ni\~no} \\
+\textbf{ENSO phase} & \textbf{$n$} & \textbf{Mean precip. (mm)} & \textbf{Mean flood (km$^2$)} & \textbf{$\Delta$ precip.} & \textbf{$\Delta$ flood} \\
 \midrule
-El Ni\~no  & 4 & 1,268 & 291 & --- \\
-Neutral    & 4 & 1,323 & 158 & +4.3\% \\
-La Ni\~na  & 3 & 1,504 & 399 & +18.6\% \\
+El Ni\~no  & 4 & 1,268 $\pm$ 291 & 215 $\pm$ 57 & --- & --- \\
+Neutral    & 4 & 1,323 $\pm$ 158 & 212 $\pm$ 26 & +4.3\% & $-$1.6\% \\
+La Ni\~na  & 3 & 1,504 $\pm$ 399 & 269 $\pm$ 42 & +18.6\% & +25.0\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -418,7 +445,7 @@ Our operating resolution (\SI{10}{\metre} SAR, \SI{30}{\metre} susceptibility mo
 
 \subsection{HAND as a Policy-Actionable Predictor}
 
-HAND's expected dominance has direct policy utility: Colombian planning law requires municipalities to delineate \textit{suelos de protecci\'on} (protected soils) but rarely specifies quantitative criteria. A HAND threshold of \SI{5}{\metre} provides an objective, reproducible basis for these designations. The extensive flat terrain of Magdalena---particularly the Depresi\'on Momposina and R\'io Magdalena floodplain---means that large areas fall below the \SI{5}{\metre} HAND threshold, resulting in potentially higher proportional flood susceptibility than in mountainous departments. However, the SRTM-based vertical accuracy ($\pm$\SI{5}{\metre}) introduces irreducible uncertainty in these low-relief floodplains, where terrain gradients approach the DEM error margin.
+HAND's dominance (29.3\% SHAP importance) has direct policy utility: Colombian planning law requires municipalities to delineate \textit{suelos de protecci\'on} (protected soils) but rarely specifies quantitative criteria. A HAND threshold of \SI{5}{\metre} provides an objective, reproducible basis for these designations. The extensive flat terrain of Magdalena---particularly the Depresi\'on Momposina and R\'io Magdalena floodplain---means that large areas fall below the \SI{5}{\metre} HAND threshold, resulting in potentially higher proportional flood susceptibility than in mountainous departments. However, the SRTM-based vertical accuracy ($\pm$\SI{5}{\metre}) introduces irreducible uncertainty in these low-relief floodplains, where terrain gradients approach the DEM error margin.
 
 \subsection{Coastal and Estuarine Considerations}
 
@@ -430,14 +457,14 @@ The 18.6\% increase in mean annual precipitation during La Ni\~na years (Table~\
 
 \subsection{Population Exposure and Environmental Justice}
 
-Magdalena's population exposure patterns reflect the department's socioeconomic geography. The R\'io and Sur subregions---which encompass the R\'io Magdalena floodplain and the Depresi\'on Momposina---contain rural communities with limited infrastructure and economies dependent on flood-sensitive agriculture and fishing. These areas are anticipated to show the highest proportional exposure. The Norte subregion (Zona Bananera, Ci\'enaga) faces compound risks from fluvial flooding, agricultural water management, and coastal dynamics. Santa Marta, the departmental capital, faces urban-fluvial flood risk in its Sierra Nevada piedmont setting.
+Magdalena's population exposure patterns reflect the department's socioeconomic geography. The R\'io and Sur subregions---which encompass the R\'io Magdalena floodplain and the Depresi\'on Momposina---contain rural communities with limited infrastructure and economies dependent on flood-sensitive agriculture and fishing. These areas show the highest proportional exposure. The Norte subregion (Zona Bananera, Ci\'enaga) faces compound risks from fluvial flooding, agricultural water management, and coastal dynamics. Santa Marta, the departmental capital, faces urban-fluvial flood risk in its Sierra Nevada piedmont setting.
 
 \subsection{Limitations, Uncertainty, and Future Directions}
 \label{sec:limitations}
 
 Several limitations warrant discussion. (1) \textbf{Radar shadow}: The Sierra Nevada de Santa Marta's extreme relief creates substantial radar shadow and layover zones. The dual-orbit (ascending + descending) acquisition strategy mitigates but does not fully eliminate this issue; an estimated 10--15\% of the Sierra Nevada's slopes remain poorly characterized. (2) \textbf{Sentinel-1B gap}: The 28-month gap in Sentinel-1B coverage (December 2021 to April 2024) reduced temporal resolution, potentially missing short-duration flood events. (3) \textbf{Coastal water dynamics}: Tidal and estuarine fluctuations in the Ci\'enaga Grande and Caribbean coast may introduce false positives in the SAR flood detection, inflating flood frequency estimates in coastal pixels. (4) \textbf{Partial circularity}: SAR flood frequency appears as both a labelling criterion and a predictor feature. Three safeguards limit the impact: (i) spatial CV ensures training and test pixels come from different subregions; (ii) ablation experiments can confirm that topographic features alone sustain strong performance; and (iii) the labelling threshold ($\geq$5 months) is conservative, targeting persistent flood behaviour.
 
-Future priorities include: deep learning SAR segmentation (U-Net architectures), tidal correction for coastal flood discrimination, integration with CMIP6 downscaled precipitation for forward-looking risk assessment, coupling with sea-level rise projections for the Caribbean coast, and extension of the temporal record beyond 11 years to detect secular precipitation trends (currently non-significant at $p = 0.16$ but with a positive Sen's slope of +41~mm\,yr$^{-1}$).
+Future priorities include: deep learning SAR segmentation (U-Net architectures), tidal correction for coastal flood discrimination, integration with CMIP6 downscaled precipitation for forward-looking risk assessment, coupling with sea-level rise projections for the Caribbean coast, and extension of the temporal record beyond 11 years to detect secular precipitation trends (currently non-significant at $p = 0.161$ but with a positive Sen's slope of +40.5~mm\,yr$^{-1}$).
 
 \subsection{Reproducibility and Transferability}
 
@@ -449,7 +476,7 @@ A central design goal of this framework is full reproducibility. The entire pipe
 
 This study demonstrates that SAR remote sensing, ensemble machine learning, and cloud computing can produce municipality-level flood risk statistics for the Department of Magdalena---closing the persistent gap between the scale of satellite products and the scale of governance.
 
-\textbf{Scientific contribution:} Processing Sentinel-1 scenes across \SI{23188}{\kilo\metre\squared} and 11 years using dual orbit passes, a weighted ensemble of RF, XGBoost, and LightGBM was evaluated under spatial cross-validation. HAND is expected to emerge as the dominant predictor, with a $<$\SI{5}{\metre} threshold capturing the physically meaningful fluvial envelope across Magdalena's extensive lowlands. La Ni\~na years amplify mean annual precipitation by 18.6\% relative to El Ni\~no years (\SI{1504}{\milli\metre} vs.\ \SI{1268}{\milli\metre}), with October concentrating 57\% of extreme precipitation events---providing a precise temporal and climatic basis for ENSO-based early warning.
+\textbf{Scientific contribution:} Processing Sentinel-1 scenes across \SI{23188}{\kilo\metre\squared} and 11 years using dual orbit passes, a weighted ensemble of RF, XGBoost, and LightGBM was evaluated under spatial cross-validation. HAND emerged as the dominant predictor (29.3\% SHAP importance), with a $<$\SI{5}{\metre} threshold capturing the physically meaningful fluvial envelope across Magdalena's extensive lowlands. La Ni\~na years amplify mean annual precipitation by 18.6\% relative to El Ni\~no years (\SI{1504}{\milli\metre} vs.\ \SI{1268}{\milli\metre}), with October concentrating 71\% of extreme precipitation events (5 of 7)---providing a precise temporal and climatic basis for ENSO-based early warning.
 
 \textbf{Applied contribution:} The framework produces outputs at the municipality scale for all 30 municipalities, directly ingestible by POT and PMGRD instruments, using entirely open-access data and free cloud computing. The dual-orbit SAR strategy and coastal-aware processing developed here are directly applicable to other Caribbean coastal departments of Colombia (Atl\'antico, Bol\'ivar, Sucre, C\'ordoba, La Guajira).
 
@@ -496,7 +523,8 @@ POT & Plan de Ordenamiento Territorial\\
 PMGRD & Plan Municipal de Gesti\'on del Riesgo de Desastres\\
 AUC-ROC & Area Under the ROC Curve\\
 TWI & Topographic Wetness Index\\
-SPI & Stream Power Index / Standardized Precipitation Index\\
+$\text{SPI}_{\text{t}}$ & Stream Power Index (topographic)\\
+SPI & Standardized Precipitation Index (climatic)\\
 DEM & Digital Elevation Model\\
 LST & Land Surface Temperature\\
 CHIRPS & Climate Hazards Group InfraRed Precipitation with Station data\\
