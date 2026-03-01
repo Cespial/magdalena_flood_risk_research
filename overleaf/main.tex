@@ -432,6 +432,10 @@ Several limitations warrant discussion. (1) \textbf{Radar shadow}: The Sierra Ne
 
 Future priorities include: deep learning SAR segmentation (U-Net architectures), tidal correction for coastal flood discrimination, integration with CMIP6 downscaled precipitation for forward-looking risk assessment, coupling with sea-level rise projections for the Caribbean coast, and extension of the temporal record beyond 11 years to detect secular precipitation trends (currently non-significant at $p = 0.16$ but with a positive Sen's slope of +41~mm\,yr$^{-1}$).
 
+\subsection{Reproducibility and Transferability}
+
+A central design goal of this framework is full reproducibility. The entire pipeline---from SAR ingestion to municipality-level risk statistics---runs on Google Earth Engine for satellite processing and open-source Python libraries (scikit-learn, XGBoost, LightGBM, SHAP) for machine learning, requiring no proprietary software or local high-performance computing. All source code, configuration files, and trained models are publicly available under the MIT license. The framework has been successfully replicated across multiple Colombian departments by changing only the configuration file (study area extent, municipality list, and subregion definitions), demonstrating its scalability. This design aligns with the growing emphasis on reproducible geospatial science and open data principles in the flood risk community.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
 \label{sec:conclusions}
@@ -485,7 +489,14 @@ POT & Plan de Ordenamiento Territorial\\
 PMGRD & Plan Municipal de Gesti\'on del Riesgo de Desastres\\
 AUC-ROC & Area Under the ROC Curve\\
 TWI & Topographic Wetness Index\\
-SPI & Stream Power Index
+SPI & Stream Power Index / Standardized Precipitation Index\\
+DEM & Digital Elevation Model\\
+LST & Land Surface Temperature\\
+CHIRPS & Climate Hazards Group InfraRed Precipitation with Station data\\
+JRC & Joint Research Centre\\
+SRTM & Shuttle Radar Topography Mission\\
+ONI & Oceanic Ni\~no Index\\
+NDVI & Normalized Difference Vegetation Index
 \end{tabular}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
